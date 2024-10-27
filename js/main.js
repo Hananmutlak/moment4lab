@@ -69,7 +69,7 @@ myrensa.addEventListener(`click`,function(){
 });
 // now vi lägga data från web storage vid sidinladdning
 function loadStorage(){
-var element= JSON.parse(loadStorage.getItem(`element`)) ||[];
+var element= JSON.parse(localStorage.getItem(`element`)) ||[];
 // now vi skapa motsvarande article element
 element.forEach(function(ny){
     var newtodoArticle= document.createElement(`article`);
