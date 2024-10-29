@@ -1,86 +1,87 @@
-/*
-Här lägger du din JavaScript-kod
-*/
-"use strict";
-// 
+"use strict"; 
 
-var myfor = document.getElementById("newtodo");
-var mynewtodobutton = document.getElementById("newtodobutton");
-var mymassage = document.getElementById("message");
-var mylist = document.getElementById("todolist");
-var myrensa = document.getElementById("clearbutton");
+const myfor = document.getElementById("newtodo");
+const mynewtodobutton = document.getElementById("newtodobutton");
+const myMessage = document.getElementById("message");
+const mylist = document.getElementById("todolist");
+const myrensa = document.getElementById("clearbutton");
 
-// för att lägga till listan använd vi addltem()
-function addltem() {
-    var newtodoText = myfor . value ;
-    if (newtodoText.length<5 ){
-mymassage.innerHTML="Text är kort";
-return;
+// // för att lägga till listan använd vi addltem()
+function addItem() {
+    const newtodoText = myfor.value;
+    if (newtodoText.length < 5) {
+        myMessage.innerHTML = "Text är kort";
+        return;
     } 
-    // skapa nytt article
-    var newtodoArticle = document.createElement(`article`);
+
+    // Skapa ett nytt article
+    const newtodoArticle = document.createElement(`article`);
     //lägga text till article
-    newtodoArticle . innerHTML = newtodoText;
-    // lägga click händelse
-    newtodoArticle.addEventListener(`click`,function () {
-        deleteltem(newtodoArticle);
+    newtodoArticle.innerHTML = newtodoText;
+
+    // Lägg till click-händelse 
+    newtodoArticle.addEventListener(`click`, function () {
+        deleteItem(newtodoArticle);
     });
 
-// lägga ny article i mylist
-mylist.appendChild(newtodoArticle);
+    // Lägg till den nya article i mylist
+    mylist.appendChild(newtodoArticle);
 
-// lagring av inmatning till web storage.
-storeItem(newtodoText);
-myfor.value="";
-mymassage.innerHTML="";
+    // lagring av inmatning till web storage.
+    storeItem(newtodoText);
+    myfor.value = ""; 
+    myMessage.innerHTML = ""; // Töm meddelandet
 }
-//sta bort från lista
-function deleteltem(item) {
+
+// Funktion för att ta bort ett objekt från listan
+function deleteItem(item) {
     mylist.removeChild(item);
-    updataStorage();
+    updateStorage();
 }
-// spara ny sak i web
+
+//  spara en ny sak i web storage
 function storeItem(newtodoText) {
-    // skapa tomt lista
-   var element = JSON.parse(localStorage.getItem(`element`)) || [];
-   // lägga ny saken 
-   element.push(newtodoText);
-   localStorage.setItem(`element`,JSON.stringify(element));
+    const element = JSON.parse(localStorage.getItem(`element`)) || [];
+    element.push(newtodoText);
+    localStorage.setItem(`element`, JSON.stringify(element));
 }
-// uppdatera web storage efter objekt bort
-function updataStorage() {
-    var updateElement=[];
-    var items = mylist.querySelectorAll(`article`);
-    //lägga text till nya list
+
+// uppdatera web storage efter att ett objekt har tagits bort
+function updateStorage() {
+    const updateElement = [];
+    const items = mylist.querySelectorAll(`article`);
     
-    items.forEach(function(item){
+    items.forEach(function(item) {
         updateElement.push(item.innerHTML);
     });
-    localStorage.setItem(`element`,JSON.stringify(updateElement));
+    localStorage.setItem(`element`, JSON.stringify(updateElement));
 }
-// lägga händelsehantener för knappen 
-mynewtodobutton.addEventListener(`click`,addltem);
-//lägga händelshantener för att ransa lista
-myrensa.addEventListener(`click`,function(){
-    mylist.innerHTML="";
 
-    // now vi rensa lista från web storage
-    localStorage.removeItem(`element`);
+// Lägg händelsehanterare för knappen
+mynewtodobutton.addEventListener(`click`, addItem);
+
+// Lägg händelsehanterare för att rensa lista
+myrensa.addEventListener(`click`, function() {
+    mylist.innerHTML = "";
+    localStorage.removeItem(`element`); //  now vi rensa lista från web storage
+    myMessage.innerHTML = "Listan har rensats."; // Informera användaren
 });
-// now vi lägga data från web storage vid sidinladdning
-function loadStorage(){
-var element= JSON.parse(localStorage.getItem(`element`)) ||[];
-// now vi skapa motsvarande article element
-element.forEach(function(ny){
-    var newtodoArticle= document.createElement(`article`);
-    newtodoArticle.innerHTML= ny;
-    // now vi klick för att ta bort article
-    newtodoArticle.addEventListener(`click`,function(){
-        deleteltem(newtodoArticle);
-    
+
+// Ladda data från web storage vid sidinladdning
+function loadStorage() {
+    const element = JSON.parse(localStorage.getItem(`element`)) || [];
+    // now vi skapa motsvarande article element
+    element.forEach(function(ny) {
+        const newtodoArticle = document.createElement(`article`);
+        newtodoArticle.innerHTML = ny;
+ // now vi klick för att ta bort article
+        newtodoArticle.addEventListener(`click`, function() {
+            deleteItem(newtodoArticle);
+        });
+
+        mylist.appendChild(newtodoArticle);
     });
-    mylist.appendChild(newtodoArticle);
-});
 }
-   // now ladda jag lista från localstorage
-   Window.onload= loadStorage;
+
+// Ladda lista från localstorage när fönstret laddas
+window.onload = loadStorage;
